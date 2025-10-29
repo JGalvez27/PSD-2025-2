@@ -1,8 +1,8 @@
-//gsoap blackJackns service name: blackJack
-//gsoap blackJackns service style: rpc
-//gsoap blackJackns service location: http//localhost:10000
-//gsoap blackJackns service encoding: encoded
-//gsoap blackJackns service namespace: urn:blackJackns
+// gsoap blackJackns service name: blackJack
+// gsoap blackJackns service style: rpc
+// gsoap blackJackns service location: http//localhost:10000
+// gsoap blackJackns service encoding: encoded
+// gsoap blackJackns service namespace: urn:blackJackns
 
 /** A player is already registered with the same name */
 #define ERROR_NAME_REPEATED -1
@@ -49,27 +49,30 @@
 /** Length for tString */
 #define STRING_LENGTH 256
 
-
 /** Dynamic array of chars */
 typedef char *xsd__string;
 
 /** Structure for sending the player's name and messages from the server */
-typedef struct tMessage{
-	int __size;
-	xsd__string msg;
-}blackJackns__tMessage;
+typedef struct tMessage {
+  int __size;
+  xsd__string msg;
+} blackJackns__tMessage;
 
 /** Structure that represents a deck */
-typedef struct tDeck{
-	int __size;
-	unsigned int *cards;	
-}blackJackns__tDeck;
+typedef struct tDeck {
+  int __size;
+  unsigned int *cards;
+} blackJackns__tDeck;
 
 /** Response from the server */
-typedef struct tBlock{
-	int code;
-	blackJackns__tMessage msgStruct;
-	blackJackns__tDeck deck;
-}blackJackns__tBlock;
+typedef struct tBlock {
+  int code;
+  blackJackns__tMessage msgStruct;
+  blackJackns__tDeck deck;
+} blackJackns__tBlock;
 
-int blackJackns__register  	(blackJackns__tMessage playerName, int* result);
+int blackJackns__register(blackJackns__tMessage playerName, int *result);
+int blackJackns__getStatus(blackJackns__tMessage playerName, int gameId,
+                           blackJackns__tBlock *result);
+int blackJackns__playerMove(blackJackns__tMessage playerName, int gameId,
+                            int action, blackJackns__tBlock *result);

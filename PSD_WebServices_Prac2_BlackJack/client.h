@@ -1,6 +1,6 @@
-#include "soapH.h"
-#include "blackJack.nsmap"
+#include "blackJackns.nsmap"
 #include "game.h"
+#include "soapH.h"
 
 /** Debug mode? */
 #define DEBUG_CLIENT FALSE
@@ -10,12 +10,11 @@
  *
  * @return A number that represents the bet for the current hand.
  */
-unsigned int readBet ();
+unsigned int readBet();
 
 /**
  * Reads the action taken by the player (stand or hit).
  *
  * @return A number that represents the action taken by the player.
  */
-unsigned int readOption ();
-
+unsigned int readOption();

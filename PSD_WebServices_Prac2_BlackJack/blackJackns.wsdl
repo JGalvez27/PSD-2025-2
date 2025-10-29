@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<definitions name="Service"
+  targetNamespace="http://tempuri.org/blackJackns.xsd/Service.wsdl"
+  xmlns:tns="http://tempuri.org/blackJackns.xsd/Service.wsdl"
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:blackJackns="http://tempuri.org/blackJackns.xsd"
+  xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns:HTTP="http://schemas.xmlsoap.org/wsdl/http/"
+  xmlns:MIME="http://schemas.xmlsoap.org/wsdl/mime/"
+  xmlns:DIME="http://schemas.xmlsoap.org/ws/2002/04/dime/wsdl/"
+  xmlns:WSDL="http://schemas.xmlsoap.org/wsdl/"
+  xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+<types>
+
   <schema targetNamespace="http://tempuri.org/blackJackns.xsd"
     xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
     xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
@@ -90,3 +107,86 @@
     </element>
   </schema>
 
+</types>
+
+<message name="registerRequest">
+  <part name="Body" element="blackJackns:register"/><!-- blackJackns__register::blackJackns__register -->
+</message>
+
+<message name="registerResponse">
+  <part name="Body" element="blackJackns:registerResponse"/>
+</message>
+
+<message name="getStatusRequest">
+  <part name="Body" element="blackJackns:getStatus"/><!-- blackJackns__getStatus::blackJackns__getStatus -->
+</message>
+
+<message name="getStatusResponse">
+  <part name="Body" element="blackJackns:getStatusResponse"/>
+</message>
+
+<message name="playerMoveRequest">
+  <part name="Body" element="blackJackns:playerMove"/><!-- blackJackns__playerMove::blackJackns__playerMove -->
+</message>
+
+<message name="playerMoveResponse">
+  <part name="Body" element="blackJackns:playerMoveResponse"/>
+</message>
+
+<portType name="ServicePortType">
+  <operation name="register">
+    <documentation>Service definition of function blackJackns__register</documentation>
+    <input message="tns:registerRequest"/>
+    <output message="tns:registerResponse"/>
+  </operation>
+  <operation name="getStatus">
+    <documentation>Service definition of function blackJackns__getStatus</documentation>
+    <input message="tns:getStatusRequest"/>
+    <output message="tns:getStatusResponse"/>
+  </operation>
+  <operation name="playerMove">
+    <documentation>Service definition of function blackJackns__playerMove</documentation>
+    <input message="tns:playerMoveRequest"/>
+    <output message="tns:playerMoveResponse"/>
+  </operation>
+</portType>
+
+<binding name="Service" type="tns:ServicePortType">
+  <SOAP:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+  <operation name="register">
+    <SOAP:operation soapAction=""/>
+    <input>
+          <SOAP:body use="literal" parts="Body"/>
+    </input>
+    <output>
+          <SOAP:body use="literal" parts="Body"/>
+    </output>
+  </operation>
+  <operation name="getStatus">
+    <SOAP:operation soapAction=""/>
+    <input>
+          <SOAP:body use="literal" parts="Body"/>
+    </input>
+    <output>
+          <SOAP:body use="literal" parts="Body"/>
+    </output>
+  </operation>
+  <operation name="playerMove">
+    <SOAP:operation soapAction=""/>
+    <input>
+          <SOAP:body use="literal" parts="Body"/>
+    </input>
+    <output>
+          <SOAP:body use="literal" parts="Body"/>
+    </output>
+  </operation>
+</binding>
+
+<service name="Service">
+  <documentation>gSOAP 2.8.139 generated service definition</documentation>
+  <port name="Service" binding="tns:Service">
+    <SOAP:address location="http://localhost:80"/>
+  </port>
+</service>
+
+</definitions>
