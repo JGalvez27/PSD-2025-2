@@ -67,7 +67,7 @@
     <element name="getStatusResponse">
       <complexType>
           <sequence>
-            <element name="status" type="blackJackns:tBlock" minOccurs="0" maxOccurs="1"/><!-- blackJackns__getStatus::status -->
+            <element name="result" type="blackJackns:tBlock" minOccurs="0" maxOccurs="1"/><!-- blackJackns__getStatus::result -->
           </sequence>
       </complexType>
     </element>
@@ -77,6 +77,7 @@
           <sequence>
             <element name="playerName" type="blackJackns:tMessage" minOccurs="1" maxOccurs="1"/><!-- blackJackns__playerMove::playerName -->
             <element name="gameId" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- blackJackns__playerMove::gameId -->
+            <element name="action" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- blackJackns__playerMove::action -->
           </sequence>
       </complexType>
     </element>
@@ -84,7 +85,7 @@
     <element name="playerMoveResponse">
       <complexType>
           <sequence>
-            <element name="result" type="xsd:int" minOccurs="0" maxOccurs="1"/><!-- blackJackns__playerMove::result -->
+            <element name="result" type="blackJackns:tBlock" minOccurs="0" maxOccurs="1"/><!-- blackJackns__playerMove::result -->
           </sequence>
       </complexType>
     </element>

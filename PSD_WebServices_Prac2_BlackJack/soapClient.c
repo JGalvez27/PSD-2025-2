@@ -17,7 +17,7 @@ A commercial use license is available from Genivia Inc., contact@genivia.com
 #endif
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapClient.c ver 2.8.139 2025-10-28 19:47:48 GMT")
+SOAP_SOURCE_STAMP("@(#) soapClient.c ver 2.8.139 2025-10-30 13:52:13 GMT")
 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_blackJackns__register(struct soap *soap, const char *soap_endpoint, const char *soap_action, struct tMessage playerName, int *result)
@@ -81,8 +81,8 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_recv_blackJackns__register(struct soap *soap, int
 	return soap_closesock(soap);
 }
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_blackJackns__getStatus(struct soap *soap, const char *soap_endpoint, const char *soap_action, struct tMessage playerName, int gameId, struct tBlock *status)
-{	if (soap_send_blackJackns__getStatus(soap, soap_endpoint, soap_action, playerName, gameId) || soap_recv_blackJackns__getStatus(soap, status))
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_blackJackns__getStatus(struct soap *soap, const char *soap_endpoint, const char *soap_action, struct tMessage playerName, int gameId, struct tBlock *result)
+{	if (soap_send_blackJackns__getStatus(soap, soap_endpoint, soap_action, playerName, gameId) || soap_recv_blackJackns__getStatus(soap, result))
 		return soap->error;
 	return SOAP_OK;
 }
@@ -120,12 +120,12 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_send_blackJackns__getStatus(struct soap *soap, co
 	return SOAP_OK;
 }
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_recv_blackJackns__getStatus(struct soap *soap, struct tBlock *status)
+SOAP_FMAC5 int SOAP_FMAC6 soap_recv_blackJackns__getStatus(struct soap *soap, struct tBlock *result)
 {
 	struct blackJackns__getStatusResponse *soap_tmp_blackJackns__getStatusResponse;
-	if (!status)
+	if (!result)
 		return soap_closesock(soap);
-	soap_default_blackJackns__tBlock(soap, status);
+	soap_default_blackJackns__tBlock(soap, result);
 	if (soap_begin_recv(soap)
 	 || soap_envelope_begin_in(soap)
 	 || soap_recv_header(soap)
@@ -138,21 +138,22 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_recv_blackJackns__getStatus(struct soap *soap, st
 	 || soap_envelope_end_in(soap)
 	 || soap_end_recv(soap))
 		return soap_closesock(soap);
-	if (status && soap_tmp_blackJackns__getStatusResponse->status)
-		*status = *soap_tmp_blackJackns__getStatusResponse->status;
+	if (result && soap_tmp_blackJackns__getStatusResponse->result)
+		*result = *soap_tmp_blackJackns__getStatusResponse->result;
 	return soap_closesock(soap);
 }
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_blackJackns__playerMove(struct soap *soap, const char *soap_endpoint, const char *soap_action, struct tMessage playerName, int gameId, int *result)
-{	if (soap_send_blackJackns__playerMove(soap, soap_endpoint, soap_action, playerName, gameId) || soap_recv_blackJackns__playerMove(soap, result))
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_blackJackns__playerMove(struct soap *soap, const char *soap_endpoint, const char *soap_action, struct tMessage playerName, int gameId, int action, struct tBlock *result)
+{	if (soap_send_blackJackns__playerMove(soap, soap_endpoint, soap_action, playerName, gameId, action) || soap_recv_blackJackns__playerMove(soap, result))
 		return soap->error;
 	return SOAP_OK;
 }
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_send_blackJackns__playerMove(struct soap *soap, const char *soap_endpoint, const char *soap_action, struct tMessage playerName, int gameId)
+SOAP_FMAC5 int SOAP_FMAC6 soap_send_blackJackns__playerMove(struct soap *soap, const char *soap_endpoint, const char *soap_action, struct tMessage playerName, int gameId, int action)
 {	struct blackJackns__playerMove soap_tmp_blackJackns__playerMove;
 	soap_tmp_blackJackns__playerMove.playerName = playerName;
 	soap_tmp_blackJackns__playerMove.gameId = gameId;
+	soap_tmp_blackJackns__playerMove.action = action;
 	soap_begin(soap);
 	soap->encodingStyle = NULL; /* use SOAP literal style */
 	soap_serializeheader(soap);
@@ -182,12 +183,12 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_send_blackJackns__playerMove(struct soap *soap, c
 	return SOAP_OK;
 }
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_recv_blackJackns__playerMove(struct soap *soap, int *result)
+SOAP_FMAC5 int SOAP_FMAC6 soap_recv_blackJackns__playerMove(struct soap *soap, struct tBlock *result)
 {
 	struct blackJackns__playerMoveResponse *soap_tmp_blackJackns__playerMoveResponse;
 	if (!result)
 		return soap_closesock(soap);
-	soap_default_int(soap, result);
+	soap_default_blackJackns__tBlock(soap, result);
 	if (soap_begin_recv(soap)
 	 || soap_envelope_begin_in(soap)
 	 || soap_recv_header(soap)

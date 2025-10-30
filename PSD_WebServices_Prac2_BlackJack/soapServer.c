@@ -17,7 +17,7 @@ A commercial use license is available from Genivia Inc., contact@genivia.com
 #endif
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapServer.c ver 2.8.139 2025-10-28 19:47:48 GMT")
+SOAP_SOURCE_STAMP("@(#) soapServer.c ver 2.8.139 2025-10-30 13:52:13 GMT")
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve(struct soap *soap)
 {
 #ifndef WITH_FASTCGI
@@ -116,7 +116,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_blackJackns__getStatus(struct soap *soap)
 	struct tBlock soap_tmp_blackJackns__tBlock;
 	soap_default_blackJackns__getStatusResponse(soap, &soap_tmp_blackJackns__getStatusResponse);
 	soap_default_blackJackns__tBlock(soap, &soap_tmp_blackJackns__tBlock);
-	soap_tmp_blackJackns__getStatusResponse.status = &soap_tmp_blackJackns__tBlock;
+	soap_tmp_blackJackns__getStatusResponse.result = &soap_tmp_blackJackns__tBlock;
 	soap_default_blackJackns__getStatus(soap, &soap_tmp_blackJackns__getStatus);
 	if (!soap_get_blackJackns__getStatus(soap, &soap_tmp_blackJackns__getStatus, "blackJackns:getStatus", NULL))
 		return soap->error;
@@ -124,7 +124,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_blackJackns__getStatus(struct soap *soap)
 	 || soap_envelope_end_in(soap)
 	 || soap_end_recv(soap))
 		return soap->error;
-	soap->error = blackJackns__getStatus(soap, soap_tmp_blackJackns__getStatus.playerName, soap_tmp_blackJackns__getStatus.gameId, soap_tmp_blackJackns__getStatusResponse.status);
+	soap->error = blackJackns__getStatus(soap, soap_tmp_blackJackns__getStatus.playerName, soap_tmp_blackJackns__getStatus.gameId, soap_tmp_blackJackns__getStatusResponse.result);
 	if (soap->error)
 		return soap->error;
 	soap->encodingStyle = NULL; /* use SOAP literal style */
@@ -157,10 +157,10 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_blackJackns__getStatus(struct soap *soap)
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_blackJackns__playerMove(struct soap *soap)
 {	struct blackJackns__playerMove soap_tmp_blackJackns__playerMove;
 	struct blackJackns__playerMoveResponse soap_tmp_blackJackns__playerMoveResponse;
-	int soap_tmp_int;
+	struct tBlock soap_tmp_blackJackns__tBlock;
 	soap_default_blackJackns__playerMoveResponse(soap, &soap_tmp_blackJackns__playerMoveResponse);
-	soap_default_int(soap, &soap_tmp_int);
-	soap_tmp_blackJackns__playerMoveResponse.result = &soap_tmp_int;
+	soap_default_blackJackns__tBlock(soap, &soap_tmp_blackJackns__tBlock);
+	soap_tmp_blackJackns__playerMoveResponse.result = &soap_tmp_blackJackns__tBlock;
 	soap_default_blackJackns__playerMove(soap, &soap_tmp_blackJackns__playerMove);
 	if (!soap_get_blackJackns__playerMove(soap, &soap_tmp_blackJackns__playerMove, "blackJackns:playerMove", NULL))
 		return soap->error;
@@ -168,7 +168,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_blackJackns__playerMove(struct soap *soap)
 	 || soap_envelope_end_in(soap)
 	 || soap_end_recv(soap))
 		return soap->error;
-	soap->error = blackJackns__playerMove(soap, soap_tmp_blackJackns__playerMove.playerName, soap_tmp_blackJackns__playerMove.gameId, soap_tmp_blackJackns__playerMoveResponse.result);
+	soap->error = blackJackns__playerMove(soap, soap_tmp_blackJackns__playerMove.playerName, soap_tmp_blackJackns__playerMove.gameId, soap_tmp_blackJackns__playerMove.action, soap_tmp_blackJackns__playerMoveResponse.result);
 	if (soap->error)
 		return soap->error;
 	soap->encodingStyle = NULL; /* use SOAP literal style */

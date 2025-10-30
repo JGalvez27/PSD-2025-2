@@ -11,6 +11,7 @@
     <msg></msg>
    </playerName>
    <gameId>0</gameId>
+   <action>0</action>
   </blackJackns:playerMove>
  </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>

@@ -18,7 +18,7 @@ A commercial use license is available from Genivia Inc., contact@genivia.com
 
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapC.c ver 2.8.139 2025-10-28 19:47:48 GMT")
+SOAP_SOURCE_STAMP("@(#) soapC.c ver 2.8.139 2025-10-30 13:52:13 GMT")
 
 
 #ifndef WITH_NOGLOBAL
@@ -1161,6 +1161,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_default_blackJackns__playerMove(struct soap *soa
 	(void)soap; (void)a; /* appease -Wall -Werror */
 	soap_default_blackJackns__tMessage(soap, &a->playerName);
 	soap_default_int(soap, &a->gameId);
+	soap_default_int(soap, &a->action);
 }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_blackJackns__playerMove(struct soap *soap, const struct blackJackns__playerMove *a)
@@ -1169,6 +1170,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_blackJackns__playerMove(struct soap *s
 #ifndef WITH_NOIDREF
 	soap_serialize_blackJackns__tMessage(soap, &a->playerName);
 	soap_embedded(soap, &a->gameId, SOAP_TYPE_int);
+	soap_embedded(soap, &a->action, SOAP_TYPE_int);
 #endif
 }
 
@@ -1181,6 +1183,8 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_blackJackns__playerMove(struct soap *soap, co
 		return soap->error;
 	if (soap_out_int(soap, "gameId", -1, &a->gameId, ""))
 		return soap->error;
+	if (soap_out_int(soap, "action", -1, &a->action, ""))
+		return soap->error;
 	return soap_element_end_out(soap, tag);
 }
 
@@ -1188,6 +1192,7 @@ SOAP_FMAC3 struct blackJackns__playerMove * SOAP_FMAC4 soap_in_blackJackns__play
 {
 	size_t soap_flag_playerName = 1;
 	size_t soap_flag_gameId = 1;
+	size_t soap_flag_action = 1;
 	if (soap_element_begin_in(soap, tag, 0, NULL))
 		return NULL;
 	(void)type; /* appease -Wall -Werror */
@@ -1211,6 +1216,12 @@ SOAP_FMAC3 struct blackJackns__playerMove * SOAP_FMAC4 soap_in_blackJackns__play
 					continue;
 				}
 			}
+			if (soap_flag_action && soap->error == SOAP_TAG_MISMATCH)
+			{	if (soap_in_int(soap, "action", &a->action, "xsd:int"))
+				{	soap_flag_action--;
+					continue;
+				}
+			}
 			if (soap->error == SOAP_TAG_MISMATCH)
 				soap->error = soap_ignore_element(soap);
 			if (soap->error == SOAP_NO_TAG)
@@ -1220,7 +1231,7 @@ SOAP_FMAC3 struct blackJackns__playerMove * SOAP_FMAC4 soap_in_blackJackns__play
 		}
 		if (soap_element_end_in(soap, tag))
 			return NULL;
-		if ((soap->mode & SOAP_XML_STRICT) && (soap_flag_playerName > 0 || soap_flag_gameId > 0))
+		if ((soap->mode & SOAP_XML_STRICT) && (soap_flag_playerName > 0 || soap_flag_gameId > 0 || soap_flag_action > 0))
 		{	soap->error = SOAP_OCCURS;
 			return NULL;
 		}
@@ -1271,7 +1282,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_blackJackns__playerMoveResponse(struct
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
 #ifndef WITH_NOIDREF
-	soap_serialize_PointerToint(soap, &a->result);
+	soap_serialize_PointerToblackJackns__tBlock(soap, &a->result);
 #endif
 }
 
@@ -1280,7 +1291,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_blackJackns__playerMoveResponse(struct soap *
 	(void)soap; (void)tag; (void)id; (void)a; (void)type; /* appease -Wall -Werror */
 	if (soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_blackJackns__playerMoveResponse), type))
 		return soap->error;
-	if (soap_out_PointerToint(soap, "result", -1, &a->result, ""))
+	if (soap_out_PointerToblackJackns__tBlock(soap, "result", -1, &a->result, ""))
 		return soap->error;
 	return soap_element_end_out(soap, tag);
 }
@@ -1300,7 +1311,7 @@ SOAP_FMAC3 struct blackJackns__playerMoveResponse * SOAP_FMAC4 soap_in_blackJack
 		for (;;)
 		{	soap->error = SOAP_TAG_MISMATCH;
 			if (soap_flag_result && soap->error == SOAP_TAG_MISMATCH)
-			{	if (soap_in_PointerToint(soap, "result", &a->result, "xsd:int"))
+			{	if (soap_in_PointerToblackJackns__tBlock(soap, "result", &a->result, "blackJackns:tBlock"))
 				{	soap_flag_result--;
 					continue;
 				}
@@ -1455,14 +1466,14 @@ SOAP_FMAC3 struct blackJackns__getStatus * SOAP_FMAC4 soap_get_blackJackns__getS
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_blackJackns__getStatusResponse(struct soap *soap, struct blackJackns__getStatusResponse *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
-	a->status = NULL;
+	a->result = NULL;
 }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_blackJackns__getStatusResponse(struct soap *soap, const struct blackJackns__getStatusResponse *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
 #ifndef WITH_NOIDREF
-	soap_serialize_PointerToblackJackns__tBlock(soap, &a->status);
+	soap_serialize_PointerToblackJackns__tBlock(soap, &a->result);
 #endif
 }
 
@@ -1471,14 +1482,14 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_blackJackns__getStatusResponse(struct soap *s
 	(void)soap; (void)tag; (void)id; (void)a; (void)type; /* appease -Wall -Werror */
 	if (soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_blackJackns__getStatusResponse), type))
 		return soap->error;
-	if (soap_out_PointerToblackJackns__tBlock(soap, "status", -1, &a->status, ""))
+	if (soap_out_PointerToblackJackns__tBlock(soap, "result", -1, &a->result, ""))
 		return soap->error;
 	return soap_element_end_out(soap, tag);
 }
 
 SOAP_FMAC3 struct blackJackns__getStatusResponse * SOAP_FMAC4 soap_in_blackJackns__getStatusResponse(struct soap *soap, const char *tag, struct blackJackns__getStatusResponse *a, const char *type)
 {
-	size_t soap_flag_status = 1;
+	size_t soap_flag_result = 1;
 	if (soap_element_begin_in(soap, tag, 0, NULL))
 		return NULL;
 	(void)type; /* appease -Wall -Werror */
@@ -1490,9 +1501,9 @@ SOAP_FMAC3 struct blackJackns__getStatusResponse * SOAP_FMAC4 soap_in_blackJackn
 	{
 		for (;;)
 		{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag_status && soap->error == SOAP_TAG_MISMATCH)
-			{	if (soap_in_PointerToblackJackns__tBlock(soap, "status", &a->status, "blackJackns:tBlock"))
-				{	soap_flag_status--;
+			if (soap_flag_result && soap->error == SOAP_TAG_MISMATCH)
+			{	if (soap_in_PointerToblackJackns__tBlock(soap, "result", &a->result, "blackJackns:tBlock"))
+				{	soap_flag_result--;
 					continue;
 				}
 			}

@@ -7,7 +7,15 @@
     xmlns:blackJackns="http://tempuri.org/blackJackns.xsd">
  <SOAP-ENV:Body>
   <blackJackns:playerMoveResponse>
-   <result>0</result>
+   <result>
+    <code>0</code>
+    <msgStruct>
+     <msg></msg>
+    </msgStruct>
+    <deck>
+     <cards>0</cards>
+    </deck>
+   </result>
   </blackJackns:playerMoveResponse>
  </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
