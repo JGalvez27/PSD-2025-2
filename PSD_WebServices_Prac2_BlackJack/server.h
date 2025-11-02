@@ -53,6 +53,10 @@ typedef struct game {
 
   pthread_mutex_t mutex;
   pthread_cond_t cond;
+
+  // Flags que indican si los jugadores han hecho STAND.
+  int player1Stood;
+  int player2Stood;
 } tGame;
 
 /**
@@ -61,6 +65,7 @@ typedef struct game {
  * @param game Game to be initialized.
  */
 void initGame(tGame *game);
+void initGameSyncPrimitives(tGame *game); // init mutex/cond (una vez)
 
 /**
  * Initialize server structures and alloc memory.

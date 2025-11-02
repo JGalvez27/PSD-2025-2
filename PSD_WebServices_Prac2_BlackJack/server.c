@@ -5,6 +5,11 @@
 /** Shared array that contains all the games. */
 tGame games[MAX_GAMES];
 
+void initGameSyncPrimitives(tGame *game) {
+  pthread_mutex_init(&(game->mutex), NULL);
+  pthread_cond_init(&(game->cond), NULL);
+}
+
 void initGame(tGame *game) {
 
   // Init players' name
@@ -26,9 +31,8 @@ void initGame(tGame *game) {
   game->endOfGame = FALSE;
   game->status = gameEmpty;
 
-  // inicializar mutex y cvs.
-  pthread_mutex_init(&(game->mutex), NULL);
-  pthread_cond_init(&(game->cond), NULL);
+  game->player1Stood = FALSE;
+  game->player2Stood = FALSE;
 }
 
 void initServerStructures(struct soap *soap) {
@@ -46,6 +50,7 @@ void initServerStructures(struct soap *soap) {
     allocDeck(soap, &(games[i].player1Deck));
     allocDeck(soap, &(games[i].player2Deck));
     allocDeck(soap, &(games[i].gameDeck));
+    initGameSyncPrimitives(&(games[i]));
     initGame(&(games[i]));
   }
 }
@@ -194,7 +199,7 @@ int blackJackns__register(struct soap *soap, blackJackns__tMessage playerName,
 
         // Desbloquear al otro jug y cambiar estado a ready.
         games[i].status = gameReady;
-        pthread_cond_broadcast(&games[i].cond);
+        pthread_cond_signal(&games[i].cond);
         if (DEBUG_SERVER)
           printf("[Register] Player %s registered in game %d as player2\n",
                  playerName.msg, i);
@@ -322,6 +327,8 @@ int blackJackns__getStatus(struct soap *soap, blackJackns__tMessage playerName,
               rivalPoints);
       copyGameStatusStructure(status, message, playerDeck, GAME_LOSE);
     }
+    // resetear juego al terminar.
+    initGame(&(games[gameId]));
   } else {
     // Es el turno de player.
     unsigned int playerPoints = calculatePoints(playerDeck);
@@ -400,6 +407,12 @@ int blackJackns__playerMove(struct soap *soap, blackJackns__tMessage playerName,
     unsigned int card = getRandomCard(&(games[gameId].gameDeck));
     playerDeck->cards[playerDeck->__size++] = card;
 
+    // resetear flag de "se ha plantado", por claridad.
+    if (player == player1)
+      games[gameId].player1Stood = FALSE;
+    else
+      games[gameId].player2Stood = FALSE;
+
     unsigned int playerPoints = calculatePoints(playerDeck);
 
     if (playerPoints > GOAL_GAME) {
@@ -410,7 +423,7 @@ int blackJackns__playerMove(struct soap *soap, blackJackns__tMessage playerName,
       games[gameId].endOfGame = TRUE;
 
       // Desbloquear rival para notificar victoria
-      pthread_cond_broadcast(&games[gameId].cond);
+      pthread_cond_signal(&games[gameId].cond);
     } else if (playerPoints == GOAL_GAME) {
       // Player alcanza 21
       sprintf(message, "You reached %d! You must stand. Your points: %d",
@@ -419,7 +432,7 @@ int blackJackns__playerMove(struct soap *soap, blackJackns__tMessage playerName,
 
       // Cambiar turno
       games[gameId].currentPlayer = calculateNextPlayer(player);
-      pthread_cond_broadcast(&games[gameId].cond);
+      pthread_cond_signal(&games[gameId].cond);
     } else {
       // Player continua
       sprintf(message, "You drew a card. Your points: %d", playerPoints);
@@ -429,9 +442,14 @@ int blackJackns__playerMove(struct soap *soap, blackJackns__tMessage playerName,
     unsigned int playerPoints = calculatePoints(playerDeck);
     unsigned int rivalPoints = calculatePoints(rivalDeck);
 
-    // Check if rival has also finished
-    if (games[gameId].currentPlayer != player) {
-      // Both players have played - determine winner
+    // Marcar jugador actual como plantado
+    if (player == player1)
+      games[gameId].player1Stood = TRUE;
+    else
+      games[gameId].player2Stood = TRUE;
+
+    // Si se han plantado los 2 -> resolver y terminar
+    if (games[gameId].player1Stood && games[gameId].player2Stood) {
       if (playerPoints > rivalPoints && playerPoints <= GOAL_GAME) {
         sprintf(message, "You win! Your points: %d, Rival points: %d",
                 playerPoints, rivalPoints);
@@ -446,14 +464,14 @@ int blackJackns__playerMove(struct soap *soap, blackJackns__tMessage playerName,
         copyGameStatusStructure(result, message, playerDeck, GAME_LOSE);
       }
       games[gameId].endOfGame = TRUE;
-      pthread_cond_broadcast(&games[gameId].cond);
+      pthread_cond_signal(&games[gameId].cond);
     } else {
-      // Change turn to rival
+      // Cambiar turno
       sprintf(message, "You stand with %d points. Rival's turn now.",
               playerPoints);
       copyGameStatusStructure(result, message, playerDeck, TURN_WAIT);
       games[gameId].currentPlayer = calculateNextPlayer(player);
-      pthread_cond_broadcast(&games[gameId].cond);
+      pthread_cond_signal(&games[gameId].cond);
     }
   }
 

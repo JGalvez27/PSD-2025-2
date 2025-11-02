@@ -123,7 +123,7 @@ int main(int argc, char **argv) {
         }
       }
     } else {
-      // SOAP error
+      // SOAP error : manejar
       printf("Error calling register service:\n");
       soap_print_fault(&soap, stderr);
       soap_destroy(&soap);
@@ -148,7 +148,7 @@ int main(int argc, char **argv) {
       }
 
       // Print game status
-      printf("\n=== Game Status ===\n");
+      printf("\n--- Game Status ---\n");
       printStatus(&gameStatus, DEBUG_CLIENT);
       printf("===================\n\n");
 
@@ -177,7 +177,7 @@ int main(int argc, char **argv) {
                                                 &gameStatus) == SOAP_OK) {
 
             // Print result of the move
-            printf("\n=== Move Result ===\n");
+            printf("\n--- Move Result ---\n");
             printStatus(&gameStatus, DEBUG_CLIENT);
             printf("===================\n\n");
 
